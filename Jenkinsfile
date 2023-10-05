@@ -33,6 +33,7 @@ pipeline {
                 sh "mvn sonar:sonar -Pcoverage -Dsonar.host.url=http://docker.sonar:9000 -Dsonar.token=${SonarToken} -f SysAsistenciaAn/pom.xml"
             }
         }
+		
         //stage('Deploy') {
         //    steps {
         //        sh "mvn spring-boot:run -f SysAsistenciaAn/pom.xml"
