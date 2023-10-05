@@ -6,93 +6,52 @@ pipeline {
         maven "MAVEN_HOME"
     }
 
-    environment {
-        SonarToken = credentials('Sonarqube')
-    }
-	
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/dmamanipar/SysEventos2023.git'
+                timeout(time: 2, unit: 'MINUTES'){
+                    git 'https://github.com/dmamanipar/SysEventos2023.git'
+                }
             }
         }
         stage('Build') {
             steps {
-                // -f: permite especificar el pom.xml que se debe ejecutar
-                // para cuando una carpeta raíz contiene varios proyectos o módulos
-                sh "mvn -DskipTests clean package -f SysAsistenciaAn/pom.xml"
+                timeout(time: 2, unit: 'MINUTES'){
+                    sh "mvn -DskipTests clean package -f SysAsistenciaAn/pom.xml"
+                }
             }
         }
         stage('Test') {
             steps {
-                sh "mvn test -f SysAsistenciaAn/pom.xml"
+                timeout(time: 2, unit: 'MINUTES'){
+                    // Se cambia <test> por <install> para que se genere el reporte de jacoco
+                    sh "mvn clean install -f SysAsistenciaAn/pom.xml"
+                }
             }
         }
         stage('Sonar') {
             steps {
-                sh "mvn sonar:sonar -Pcoverage -Dsonar.host.url=http://docker.sonar:9000 -Dsonar.token=${SonarToken} -f SysAsistenciaAn/pom.xml"
+                timeout(time: 2, unit: 'MINUTES'){
+                    withSonarQubeEnv('sonarqube'){
+                        sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Pcoverage -f SysAsistenciaAn/pom.xml"
+                    }
+                }
             }
         }
-		
-        //stage('Deploy') {
-        //    steps {
-        //        sh "mvn spring-boot:run -f SysAsistenciaAn/pom.xml"
-        //    }
-        //}
-    }
-}
+        stage('Quality gate') {
+            steps {
 
-node {
-   
-    environment {
-        projectOSE = '';
-    }
+                sleep(10) //seconds
 
-    stage('Check branch') {
-        try {       
-            stageValidateExec(enviroment, branchGit);
-            logEjecuciones = logEjecuciones + 'Check branch: OK\n';
-        } catch(e) {
-            logEjecuciones = logEjecuciones + 'Check branch: KO\n';
-            throw e;
-        }
-    }
-
-    stage('Tests Unitaries') {
-        try {
-            stageTests();
-            logEjecuciones = logEjecuciones + 'Tests Unitaries PRO: OK\n';
-        } catch (e) {
-            logEjecuciones = logEjecuciones + 'Tests Unitaries PRO: KO\n';
-            throw e;
-        }
-    }
-}
-
-def stageValidateExec(def env, def branch){ 
-    if (env == "des" || (branch == "develop" || branch == "master" || branch.startsWith("release/"))) {
-        println "Branch [${branch}] is valid to be deployed in [${env}]"
-    } else {
-        println "Branch [${branch}] is NOT valid to be deployed in [${env}]"
-        throw new Exception("Invalid branch ${branch} for environment ${env}")
-    }
-}
-
-def stageTests() {
-    println 'Tests Unitarios PRO';
-    try {
-        withMaven(  jdk: 'JAVA_SYSTEM_11', maven: 'MAVEN_SYSTEM',mavenSettingsFilePath: '/opt/maven/conf/settingsPibank.xml') {
-            if (isUnix()) {
-                sh "mvn test";
-            } else {
-                bat "mvn test";
+                timeout(time: 2, unit: 'MINUTES'){
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
-    } catch(err) {
-        step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
-        if (currentBuild.result == 'UNSTABLE') {
-            currentBuild.result = 'FAILURE' //ABORTED FAILURE NOT_BUILT SUCCESS UNSTABLE
+        stage('Deploy') {
+            steps {
+                echo "mvn spring-boot:run -f SysAsistenciaAn/pom.xml"
+            }
         }
-        throw err;      
-    }       
+    }
 }
