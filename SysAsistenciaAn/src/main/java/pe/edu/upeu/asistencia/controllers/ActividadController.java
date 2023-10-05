@@ -34,7 +34,7 @@ public class ActividadController {
     @Autowired
     private ActividadService actividadService;
     
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public ResponseEntity<List<Actividad>> listActividad() {
         List<Actividad> actDto = actividadService.findAll();
         
