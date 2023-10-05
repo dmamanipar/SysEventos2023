@@ -26,7 +26,7 @@ pipeline {
         }
         stage('Sonar') {
             steps {
-                sh "mvn sonar:sonar -Pcoverage -Dsonar.host.url=http://sonarqube:9000 -Dsonar.token=squ_10bc49edfc0d4d831b9b623c7df9ad1050d5439f -f SysAsistenciaAn/pom.xml"
+                sh "mvn sonar:sonar -Pcoverage -Dsonar.host.url=http://docker.sonar:9000 -Dsonar.token=squ_10bc49edfc0d4d831b9b623c7df9ad1050d5439f -f SysAsistenciaAn/pom.xml"
             }
         }
         stage('Deploy') {
