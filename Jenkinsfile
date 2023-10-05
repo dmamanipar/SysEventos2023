@@ -23,7 +23,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                timeout(time: 2, unit: 'MINUTES'){
+                timeout(time: 3, unit: 'MINUTES'){
                     // Se cambia <test> por <install> para que se genere el reporte de jacoco
                     sh "mvn clean install -f SysAsistenciaAn/pom.xml"
                 }
