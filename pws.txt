@@ -4,3 +4,5 @@ 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
 
 #Permisos para acceso a DB
 GRANT ALL PRIVILEGES ON * . * TO 'root'@'%';
+
+
