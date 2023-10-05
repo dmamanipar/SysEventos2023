@@ -49,7 +49,7 @@ public class PeriodoControllerWebTestClientTest {
         webTestClient.post()
                 .uri("/asis/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new CredencialesDto("davidmp@upeu.edu.pe", "Da12345*".toCharArray()))
+                .bodyValue(new CredencialesDto("davidmp@upeu.edu.pe", "Da12345*"))//.toCharArray()
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class)

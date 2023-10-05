@@ -59,7 +59,7 @@ public class PeriodoControllerTest {
     }
 
     @Test
-    public void testListarPeriodo() throws Exception {
+    void testListarPeriodo() throws Exception {
         //given
        /* List<PeriodoDto> listarPeriodo = new ArrayList<>();
         listarPeriodo.add(PeriodoDto.builder().nombre("2021-1").estado("Activo").build());
