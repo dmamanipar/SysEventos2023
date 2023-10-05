@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UsuarioDto {
 
-    private Long id;
-    private String nombres;
-    private String apellidos;
-    private String correo;
-    private String token;
-    private String dni;
-    private String perfilPrin;
-    private String estado;
-    private String offlinex;
+     Long id;
+     String nombres;
+     String apellidos;
+     String correo;
+     String token;
+     String dni;
+     String perfilPrin;
+     String estado;
+     String offlinex;
 
 }
