@@ -6,10 +6,14 @@ pipeline {
         maven "MAVEN_HOME"
     }
 
+    environment {
+        SonarToken = credentials('squ_10bc49edfc0d4d831b9b623c7df9ad1050d5439f')
+    }
+	
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/dmamanipar/SysEventos2023'
+                git 'https://github.com/dmamanipar/SysEventos2023.git'
             }
         }
         stage('Build') {
@@ -26,14 +30,14 @@ pipeline {
         }
         stage('Sonar') {
             steps {
-                sh "mvn sonar:sonar -Pcoverage -Dsonar.host.url=http://docker.sonar:9000 -Dsonar.token=squ_10bc49edfc0d4d831b9b623c7df9ad1050d5439f -f SysAsistenciaAn/pom.xml"
+                sh "mvn sonar:sonar -Pcoverage -Dsonar.host.url=http://docker.sonar:9000 -Dsonar.token=${SonarToken} -f SysAsistenciaAn/pom.xml"
             }
         }
-        stage('Deploy') {
-            steps {
-                sh "mvn spring-boot:run -f SysAsistenciaAn/pom.xml"
-            }
-        }
+        //stage('Deploy') {
+        //    steps {
+        //        sh "mvn spring-boot:run -f SysAsistenciaAn/pom.xml"
+        //    }
+        //}
     }
 }
 
