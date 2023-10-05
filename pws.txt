@@ -1,2 +1,5 @@
 Token
 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
+
+#Permisos para acceso a DB
+GRANT ALL PRIVILEGES ON * . * TO 'root'@'%';
