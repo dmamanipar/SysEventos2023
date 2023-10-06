@@ -51,8 +51,8 @@ public class UsuarioService {
 
         Usuario user = userMapper.usuarioCrearDtoToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.password())));
-         System.out.println("Llego.................");
-         System.out.println(userDto.token());
+         //System.out.println("Llego.................");
+         //System.out.println(userDto.token());
         
          Set<Rol> roles = new HashSet<>();
         roles.add(rolService.getByRolNombre(Rol.RolNombre.ROLE_USER).get());
